@@ -1,0 +1,81 @@
+# Build Folders
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider & VSCode settings
+.idea/
+.vscode/
+.vscode/*
+
+# Logs and Database
+*.log
+*.tlog
+*.mdf
+*.ldf
+*.ndf
+
+# Temporary files
+*.tmp
+*.temp
+*.ncb
+*.cache
+*.pdb
+*.pidb
+*.svclog
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Packages
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+~$*
+
+# Visual Studio working directory
+.vs/
+
+# DotNet Console publish directory
+publish/
+
+# Coverage & Analysis Results
+TestResults/
+*.coverage
+*.coveragexml
+*.codecov
+*.gcov
+coverage*.json
+coverage*.xml
+
+# Config & Secret Files
+appsettings.*.json
+secrets.json
+
+# Dependency Directories
+node_modules/
+wwwroot/lib/
+
+# JetBrains Rider caches
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Resharper Files
+_ReSharper*/
+*.DotSettings.user
+
+# NuGet & dotnet restore cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
