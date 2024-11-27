@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Core", "DynamicMap.Core\DynamicMap.Core.csproj", "{77F82F43-D47A-4985-9EBF-84339F89C1B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Tests", "DynamicMap.Tests\DynamicMap.Tests.csproj", "{B95AFC14-82DB-49D2-97C2-46C34A547AE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Example", "DynamicMap.Example\DynamicMap.Example.csproj", "{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{77F82F43-D47A-4985-9EBF-84339F89C1B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77F82F43-D47A-4985-9EBF-84339F89C1B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77F82F43-D47A-4985-9EBF-84339F89C1B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77F82F43-D47A-4985-9EBF-84339F89C1B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95AFC14-82DB-49D2-97C2-46C34A547AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95AFC14-82DB-49D2-97C2-46C34A547AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95AFC14-82DB-49D2-97C2-46C34A547AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95AFC14-82DB-49D2-97C2-46C34A547AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
