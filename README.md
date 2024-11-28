@@ -1,7 +1,7 @@
 # Dynamic Mapping Library
 
 ## Overview
-The **Dynamic Mapping Library** is a hight performant and light weight library designed to simplify data transformations between different structures.
+The **Dynamic Mapping Library** is a lightweight, high-performance, and extensible library designed to simplify data transformations between different structures.
 
 ---
 
@@ -10,23 +10,45 @@ The **Dynamic Mapping Library** is a hight performant and light weight library d
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [Assumption](#assumption)
+  - [Potential Issues](#potential-issues)
   - [Installation](#installation)
   - [Quick Start](#quick-start)
     - [Another good way:](#another-good-way)
+  - [Third Party Data Model](#third-party-data-model)
   - [Nested Map](#nested-map)
     - [Max Recursion Depth](#max-recursion-depth)
   - [Ways to Add Map Rules](#ways-to-add-map-rules)
       - [Class based mapper](#class-based-mapper)
       - [Functional mapper](#functional-mapper)
+    - [Key Errors](#key-errors)
+      - [MapConfiguration](#mapconfiguration)
+      - [IMapHandler](#imaphandler)
+  - [Layered Architecture](#layered-architecture)
+  - [Key Classes](#key-classes)
+  - [Future Work](#future-work)
 
 ---
 
 ## Features
-- **High Performance**: Designed for optimal performance avoiding reflection.  
-<!-- - **Type Safety**: Ensures compile-time checks for mapping validity.   -->
-- **Customizable**: Define custom mapping logic with ease.  
+- **High Performance**: Designed for optimal performance avoiding reflection and assembly scanning.
 - **Supports Nested Structures**: Works with complex, multi-level data models.
-- **External Dependency**: No use of any third party package.
+- **Extensible Mapping Template**: Provides an extensible template to take care of mapping logics.
+- **Customizable**: Multple way to provide custom mapping logic with ease.  
+- **External Dependency**: No third party package.
+
+---
+
+## Assumption
+- Mapping logics between source and target will be provided by developer for now.
+- Pure mapping library to evaluate the thought process.
+- Sometimes, corresponding third party data models may not have concrete types (such as classes or record) in our project. Bsides performanace, another reasons not to use Reflection.
+
+---
+
+## Potential Issues
+
+- **MaxRecursionDepth** : Enforced a maximum depth to limit the depth when mapping nested objects and circular references. Caution should be exercised when setting it to a large value. `Default value is 3`
 
 ---
 
@@ -37,18 +59,18 @@ Add class library `DynamicMap.Core` to your application.
 ---
 ## Quick Start
 
-First, specify the configuration and map after that.
+First, specify the configuration between source and target. Second map between them.
 
 ```
 // configuration
 
 var mapConfiguration = new MapConfiguration()
 
-mapConfiguration.AddMap("External.User", "Internal.User", (source, handlerContext) => 
+mapConfiguration.AddMap("GoogleUser", "Dirs21User", (source, handlerContext) => 
 {
     var src = TypeCastUtil.CastTypeBeforeMap<GoogleUser>(source);
     
-    return new Internal.User
+    return new Dirs21User
     {
         UserId = Guid.Parse(src.UserId),
         FullName = src.FirstName + " " + src.LastName
@@ -60,9 +82,11 @@ mapConfiguration.AddMap("External.User", "Internal.User", (source, handlerContex
 
 var mapHandler = new MapHandler(mapConfiguration)
 
-var internalUser = (Internal.User)mapHandler.Map(externalUser, "External.User", "Internal.User");
+var dirs21User = (Dirs21User)mapHandler.Map(externalUser, "GoogleUser", "Dirs21User");
 
 ```
+
+---
 
 ### Another good way:
 
@@ -119,6 +143,45 @@ var mapHandler = serviceProvider.GetRequiredService<IMapHandler>();
 var dirs21Room = (Dirs21Room)mapHandler.Map(googleRoom, "Google.Room", "Dirs21.Room");
 ```
 
+---
+
+## Third Party Data Model
+
+Incase we don't want to implement third part provider's type in our project. Here our project doesn't have the data model for `GoogleUser`. We want to map incoming google user data model directly to our type `Dirs21User` and vise-versa.
+
+```
+public class Dirs21UserToGoogleUserJsonMap : MapStrategy<Dirs21User, string>
+{
+    public override string Map(Dirs21User source, IMapHandlerContext handlerContext)
+    {
+        return new JObject
+        {
+            { "FirstName", source.FullName.Split(" ").First() },
+            { "LastName", source.FullName.Split(" ").Last() }
+        }.ToString();
+    }
+
+    public override Dirs21User ReverseMap(string target, IMapHandlerContext handlerContext)
+    {
+        var jObject = JObject.Parse(target);
+
+        return new Dirs21User
+        {
+            FullName = $"{jObject["FirstName"]} {jObject["LastName"]}"
+        };
+    }
+}
+```
+
+Add the mapper to configuration:
+
+```
+AddMap("Dirs21User", "GoogleUserJsonString",new Dirs21UserToGoogleUserJsonMap())
+    .AddReverseMap();
+
+```
+
+---
 
 ## Nested Map
 
@@ -132,7 +195,6 @@ public class Dirs21ToGoogleReservationMap : MapStrategy<Dirs21Reservation, Googl
         return new GoogleReservation
         {
             ...
-            ...
             Room = (GoogleRoom?)handlerContext.Map(src.Dirs21Room,
                 "Dirs21.Room",
                 "Google.Room")
@@ -143,7 +205,6 @@ public class Dirs21ToGoogleReservationMap : MapStrategy<Dirs21Reservation, Googl
     {
         return new Dirs21Reservation
         {
-            ...
             ...
             Dirs21Room = (Dirs21Room?)handlerContext.Map(dest.Room,
                 "Google.Room",
@@ -173,6 +234,8 @@ public class ExampleMapConfiguration : MapConfiguration
 }
 
 ```
+
+---
 
 ## Ways to Add Map Rules 
 
@@ -247,8 +310,45 @@ Now you can add to configuration:
 
 AddMap("Model.User",
     "Google.User", MapToGoogleUser);
-....
 
 ```
 Currently, we are not supporting `ReverseMap` out of the box with this approach since you can just do `AddMap("Google.User", "Model.User", MapToModelUser);`
 
+---
+
+### Key Errors
+
+#### MapConfiguration
+
+- **MaxRecursionDepth**
+  - `ArgumentException` : 1 <= value <= 100
+- **AddMap**
+  - `MappingRulesAlreadyExistsException` 
+  
+#### IMapHandler
+- **Map**
+  - `MappingRulesNotFoundException`,`NullMappingResultException`,`InvalidCastException`
+
+## Layered Architecture
+
+- **DynamicMap.Core:** Holds the core skeleton and logics of mapping library.
+- **DynamicMap.Examples:** Depends on the `DynamicMap.Core` layer to use it's mapping capablities.
+- **DynamicMap.Tests:**  Depends on both `DynamicMap.Core` and `DynamicMap.Examples` to tests the functionalities.
+
+---
+
+## Key Classes
+
+- **MapConfiguration:** A configuration store that provides interface to add and retrieve map configuration. 
+- **MapHandler:** Provides a method to map an object from a specified source type to a target type.
+- **MapHandlerContext:** Manage map execution context and recursion while mapping. It also provides a method to handle nested map.
+- **MapStrategy<TSource, TTarget>:** A template to provide mapping logics between source and target. Strategy pattern is followd here.
+
+---
+
+## Future Work
+Designing a map library takes a lot thoughts and time. Due to time time constraint, everything is not taken care of. We can focus on following in the future.
+- Implement an approach to map properties automatically.
+- Have separate config meta data for each map rule. For example `MaxRecursionDepth` is same for all mapping rules now. 
+
+  
