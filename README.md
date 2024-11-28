@@ -32,10 +32,11 @@ The **Dynamic Mapping Library** is a lightweight, high-performance, and extensib
 ---
 
 ## Assumption
-- I tried to adhere to the given signature `_mapHandler.Map(object data, string sourceType, string targetType);`.
-- I am uncertain whether the third-party data models will always have corresponding concrete types (such as classes or records) in our project. If third-party data models have corresponding concrete types in our project, using generic is better option. 
-- Since passed argument `data` is of type `object` in `_mapHandler.Map(object data, string sourceType, string targetType);` so I am returing the type `object` as well.
-- Mapping logics between source and target will be provided by developer for now.
+
+- I tried to adhere to the given signature `_mapHandler.Map(object data, string sourceType, string targetType)`.
+- I am uncertain whether the third-party data models will always have corresponding concrete types (such as classes or records) in our project. If third-party data models have corresponding concrete types in our project, using generic is a better option. Using generic instead of `object` will provide strong typing.
+- Since passed argument data is of type `object` in `_mapHandler.Map(object data, string sourceType, string targetType)`, so I am returning the type `object` as well which is not strongly typed.
+- Mapping logic between source and target will be provided by the developer for now.
 - Pure mapping library to evaluate the thought process.
 
 ---
