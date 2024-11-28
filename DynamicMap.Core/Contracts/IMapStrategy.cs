@@ -15,7 +15,7 @@ public interface IMapStrategy
     /// </summary>
     /// <param name="source">The source object to be mapped.</param>
     /// <returns>The mapped target object.</returns>
-    object? Map(object source, IMapHandlerContext mapHandlerContext);
+    object? Map(object source, IMapHandlerContext handlerContext);
 
     /// <summary>
     ///     Maps the provided target object back to a source object based on the implemented strategy.
@@ -25,5 +25,5 @@ public interface IMapStrategy
     /// </summary>
     /// <param name="target">The target object to be reverse-mapped.</param>
     /// <returns>The mapped source object.</returns>
-    object? ReverseMap(object target, IMapHandlerContext mapHandlerContext);
+    object? ReverseMap(object target, IMapHandlerContext handlerContext);
 }

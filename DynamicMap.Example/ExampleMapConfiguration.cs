@@ -1,15 +1,15 @@
 ﻿using DynamicMap.Example.Mappers;
 using DynamicMap.Example.Models.Google;
 using DynamicMap.Example.Models.Internal;
-using DynamicMappingLibrary.Context;
+using DynamicMappingLibrary.Configurations;
 using DynamicMappingLibrary.Contracts;
 using DynamicMappingLibrary.Helpers;
 
 namespace DynamicMap.Example;
 
-public class ExampleMapContext : MapContext
+public class ExampleMapConfiguration : MapConfiguration
 {
-    public ExampleMapContext(int maxRecursionDepth = 3)
+    public ExampleMapConfiguration(int maxRecursionDepth = 3)
     {
         MaxRecursionDepth = maxRecursionDepth;
 

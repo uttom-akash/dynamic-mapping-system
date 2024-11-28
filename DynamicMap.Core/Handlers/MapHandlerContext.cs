@@ -1,4 +1,4 @@
-using DynamicMappingLibrary.Context;
+using DynamicMappingLibrary.Configurations;
 using DynamicMappingLibrary.Contracts;
 using DynamicMappingLibrary.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -9,13 +9,13 @@ public class MapHandlerContext : IMapHandlerContext
 {
     private readonly ILogger<MapHandler> _logger;
 
-    private readonly MapContext _mapContext;
+    private readonly MapConfiguration _mapConfiguration;
 
-    public MapHandlerContext(MapContext mapContext,
+    public MapHandlerContext(MapConfiguration mapConfiguration,
         ILogger<MapHandler> logger,
         int recursionDepth)
     {
-        _mapContext = mapContext;
+        _mapConfiguration = mapConfiguration;
         _logger = logger;
         RecursionDepth = recursionDepth;
     }
@@ -26,21 +26,21 @@ public class MapHandlerContext : IMapHandlerContext
     {
         if (src is null)
         {
-            _logger.LogDebug($"Lower level src object {sourceType} is null");
+            _logger.LogDebug($"Lower level source object {sourceType} is null");
             return null;
         }
 
         if (HasExceddedRecursionDepth())
         {
-            _logger.LogDebug($"Exceeded maximum recursion depth: {_mapContext.MaxRecursionDepth}");
+            _logger.LogDebug($"Exceeded maximum recursion depth: {_mapConfiguration.MaxRecursionDepth}");
 
             return null;
         }
 
-        var mapFunc = _mapContext
+        var mapFunc = _mapConfiguration
             .GetMapFunc(sourceType, targetType);
 
-        var childHandlerContext = Create(_mapContext,
+        var childHandlerContext = Create(_mapConfiguration,
             _logger,
             RecursionDepth - 1);
 
@@ -57,8 +57,9 @@ public class MapHandlerContext : IMapHandlerContext
         return RecursionDepth <= 0;
     }
 
-    public static IMapHandlerContext Create(MapContext mapContext, ILogger<MapHandler> logger, int recursionDepth)
+    public static IMapHandlerContext Create(MapConfiguration mapConfiguration, ILogger<MapHandler> logger,
+        int recursionDepth)
     {
-        return new MapHandlerContext(mapContext, logger, recursionDepth);
+        return new MapHandlerContext(mapConfiguration, logger, recursionDepth);
     }
 }

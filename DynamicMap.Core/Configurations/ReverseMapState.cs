@@ -1,13 +1,13 @@
 using DynamicMappingLibrary.Contracts;
 
-namespace DynamicMappingLibrary.Context;
+namespace DynamicMappingLibrary.Configurations;
 
 /// <summary>
 ///     <c>ReverseMapState</c> contains the required state and method to configure reverse mapping
 /// </summary>
 public class ReverseMapState
 {
-    private readonly MapContext _mapContext;
+    private readonly MapConfiguration _mapConfiguration;
     private readonly Func<object, IMapHandlerContext, object?> _reverseMapperFunc;
     private readonly string _sourceType;
     private readonly string _targetType;
@@ -15,12 +15,12 @@ public class ReverseMapState
     public ReverseMapState(string sourceType,
         string targetType,
         Func<object, IMapHandlerContext, object?> reverseMapperFunc,
-        MapContext mapContext)
+        MapConfiguration mapConfiguration)
     {
         _sourceType = sourceType;
         _targetType = targetType;
         _reverseMapperFunc = reverseMapperFunc;
-        _mapContext = mapContext;
+        _mapConfiguration = mapConfiguration;
     }
 
     /// <summary>
@@ -28,6 +28,6 @@ public class ReverseMapState
     /// </summary>
     public void AddReverseMap()
     {
-        _mapContext.AddMap(_sourceType, _targetType, _reverseMapperFunc);
+        _mapConfiguration.AddMap(_sourceType, _targetType, _reverseMapperFunc);
     }
 }

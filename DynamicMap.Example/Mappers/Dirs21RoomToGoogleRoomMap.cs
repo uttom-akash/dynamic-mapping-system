@@ -7,7 +7,7 @@ namespace DynamicMap.Example.Mappers;
 
 public class Dirs21RoomToGoogleRoomMap : MapStrategy<Dirs21Room, GoogleRoom>
 {
-    public override GoogleRoom Map(Dirs21Room src, IMapHandlerContext mapHandlerContext)
+    public override GoogleRoom Map(Dirs21Room src, IMapHandlerContext handlerContext)
     {
         return new GoogleRoom
         {
@@ -19,7 +19,7 @@ public class Dirs21RoomToGoogleRoomMap : MapStrategy<Dirs21Room, GoogleRoom>
         };
     }
 
-    public override Dirs21Room ReverseMap(GoogleRoom src, IMapHandlerContext mapHandlerContext)
+    public override Dirs21Room ReverseMap(GoogleRoom src, IMapHandlerContext handlerContext)
     {
         Guid.TryParse(src.RoomId, out var roomId);
         Enum.TryParse(src.RoomType, true, out RoomType roomType);

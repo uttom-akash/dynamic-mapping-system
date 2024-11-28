@@ -4,6 +4,7 @@ using System.Text.Json;
 using DynamicMap.Example.Models.Google;
 using DynamicMap.Example.Models.Internal;
 using DynamicMappingLibrary;
+using DynamicMappingLibrary.Configurations;
 using DynamicMappingLibrary.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +14,8 @@ internal static class Program
 {
     private static void Main(string[] args)
     {
+        var mapConfig = new MapConfiguration(5);
+
         var serviceProvider = ConfigureServices();
         var mapHandler = serviceProvider.GetRequiredService<IMapHandler>();
         var googleClientMock = serviceProvider.GetRequiredService<GoogleClientMock>();
@@ -58,7 +61,7 @@ internal static class Program
     {
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddDynamicMap(new ExampleMapContext())
+        serviceCollection.AddDynamicMap(typeof(ExampleMapConfiguration))
             .AddSingleton<GoogleClientMock>()
             .AddLogging();
 

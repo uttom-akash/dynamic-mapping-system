@@ -9,22 +9,22 @@ namespace DynamicMappingLibrary.Strategies;
 /// </summary>
 public abstract class MapStrategy<TSource, TTarget> : IMapStrategy
 {
-    public object? Map(object source, IMapHandlerContext mapHandlerContext)
+    public object? Map(object source, IMapHandlerContext handlerContext)
     {
         var typeCastedSource = TypeCastUtil.CastTypeBeforeMap<TSource>(source);
 
-        var target = Map(typeCastedSource, mapHandlerContext);
+        var target = Map(typeCastedSource, handlerContext);
 
         var typedCastedTarget = TypeCastUtil.CastTypeAfterMap<TTarget>(target);
 
         return typedCastedTarget;
     }
 
-    public object? ReverseMap(object target, IMapHandlerContext mapHandlerContext)
+    public object? ReverseMap(object target, IMapHandlerContext handlerContext)
     {
         var typeCastedTarget = TypeCastUtil.CastTypeBeforeMap<TTarget>(target);
 
-        var source = ReverseMap(typeCastedTarget, mapHandlerContext);
+        var source = ReverseMap(typeCastedTarget, handlerContext);
 
         var typedCastedSource = TypeCastUtil.CastTypeAfterMap<TSource>(source);
 
@@ -36,12 +36,12 @@ public abstract class MapStrategy<TSource, TTarget> : IMapStrategy
     /// </summary>
     /// <param name="source">The source object to be mapped.</param>
     /// <returns>The mapped object of type <typeparamref name="TTarget" />.</returns>
-    public abstract TTarget Map(TSource source, IMapHandlerContext mapHandlerContext);
+    public abstract TTarget Map(TSource source, IMapHandlerContext handlerContext);
 
     /// <summary>
     ///     Maps an object of type <typeparamref name="TTarget" /> back to an object of type <typeparamref name="TSource" />.
     /// </summary>
     /// <param name="target">The target object to be reverse-mapped.</param>
     /// <returns>The mapped object of type <typeparamref name="TSource" />.</returns>
-    public abstract TSource ReverseMap(TTarget target, IMapHandlerContext mapHandlerContext);
+    public abstract TSource ReverseMap(TTarget target, IMapHandlerContext handlerContext);
 }

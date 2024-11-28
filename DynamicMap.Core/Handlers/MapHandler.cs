@@ -1,4 +1,4 @@
-using DynamicMappingLibrary.Context;
+using DynamicMappingLibrary.Configurations;
 using DynamicMappingLibrary.Contracts;
 using DynamicMappingLibrary.Exceptions;
 using Microsoft.Extensions.Logging;
@@ -8,12 +8,12 @@ namespace DynamicMappingLibrary.Handlers;
 public class MapHandler : IMapHandler
 {
     private readonly ILogger<MapHandler> _logger;
-    private readonly MapContext _mapContext;
+    private readonly MapConfiguration _mapConfiguration;
 
-    public MapHandler(MapContext mapContext,
+    public MapHandler(MapConfiguration mapConfiguration,
         ILogger<MapHandler> logger)
     {
-        _mapContext = mapContext;
+        _mapConfiguration = mapConfiguration;
         _logger = logger;
     }
 
@@ -23,7 +23,8 @@ public class MapHandler : IMapHandler
         {
             ArgumentNullException.ThrowIfNull(src);
 
-            var handlerContext = MapHandlerContext.Create(_mapContext, _logger, _mapContext.MaxRecursionDepth);
+            var handlerContext =
+                MapHandlerContext.Create(_mapConfiguration, _logger, _mapConfiguration.MaxRecursionDepth);
 
             var target = handlerContext.Map(src, sourceType, targetType);
 

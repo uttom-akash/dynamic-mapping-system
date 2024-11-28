@@ -16,13 +16,13 @@ public class DynamicMapTests
 {
     private readonly ILogger<MapHandler> _logger;
     private readonly MapHandler _mapHandler;
-    private readonly TestMapContext _testMapContext;
+    private readonly TestMapConfiguration _testMapConfiguration;
 
     public DynamicMapTests()
     {
-        _testMapContext = new TestMapContext();
+        _testMapConfiguration = new TestMapConfiguration();
         _logger = new Mock<ILogger<MapHandler>>().Object;
-        _mapHandler = new MapHandler(_testMapContext, _logger);
+        _mapHandler = new MapHandler(_testMapConfiguration, _logger);
     }
 
     [Fact]
@@ -41,11 +41,11 @@ public class DynamicMapTests
     public void Map_MapRuleIsAddedTwice_ThrowsMappingRulesAlreadyExistsException()
     {
         // Arrange
-        _testMapContext.AddMap("Model.Room", "Google.Room",
+        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
             new TestDirs21RoomToGoogleRoomMap());
 
         // Act & Assert
-        Assert.Throws<MappingRulesAlreadyExistsException>(() => _testMapContext
+        Assert.Throws<MappingRulesAlreadyExistsException>(() => _testMapConfiguration
             .AddMap("Model.Room", "Google.Room",
                 new TestDirs21RoomToGoogleRoomMap()));
     }
@@ -54,7 +54,7 @@ public class DynamicMapTests
     public void Map_Dirs21ToGoogleRoomMapAdded_ShouldReturnGoogleRoom()
     {
         //Arrange
-        _testMapContext.AddMap("Model.Room", "Google.Room",
+        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
             new TestDirs21RoomToGoogleRoomMap());
 
         var fixture = new Fixture();
@@ -70,7 +70,7 @@ public class DynamicMapTests
     public void Map_Dirs21ToGoogleRoomReverseMapAdded_ShouldReturnDirs21Room()
     {
         //Arrange
-        _testMapContext.AddMap("Model.Room", "Google.Room",
+        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
                 new TestDirs21RoomToGoogleRoomMap())
             .AddReverseMap();
 
@@ -89,7 +89,7 @@ public class DynamicMapTests
     public void Map_NullArgument_ThrowsArgumentNullException()
     {
         //Arrange
-        _testMapContext.AddMap("Model.Room", "Google.Room",
+        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
             new TestDirs21RoomToGoogleRoomMap());
 
         TestDirs21Room dirs21Room = null;
@@ -102,7 +102,7 @@ public class DynamicMapTests
     public void Map_SourceObjectTypeMissMatched_ThrowsInvalidCastException()
     {
         //Arrange
-        _testMapContext.AddMap("Model.Room", "Google.Room",
+        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
             new TestDirs21RoomToGoogleRoomMap());
 
         var fixture = new Fixture();
@@ -118,7 +118,7 @@ public class DynamicMapTests
         //Arrange
         var testDirs21ToGoogleRoomMap = new TestDirs21RoomToGoogleRoomMap();
 
-        _testMapContext.AddMap("Model.Room", "Google.Room", (source, handlerContext) => { return null; });
+        _testMapConfiguration.AddMap("Model.Room", "Google.Room", (source, handlerContext) => { return null; });
 
         var fixture = new Fixture();
         var dirs21Room = fixture.Create<TestDirs21Room>();
@@ -131,7 +131,7 @@ public class DynamicMapTests
     public void Map_RecursionDepthTwo_ShouldMapNestedObject()
     {
         //Arrange
-        var exampleMapContext = new ExampleMapContext(2);
+        var exampleMapContext = new ExampleMapConfiguration(2);
 
         var fixture = new Fixture();
         var dirs21Reservation = fixture.Create<Dirs21Reservation>();
@@ -152,7 +152,7 @@ public class DynamicMapTests
     public void Map_RecursionDepthOne_ShouldNotMapNestedObject()
     {
         //Arrange
-        var exampleMapContext = new ExampleMapContext(1);
+        var exampleMapContext = new ExampleMapConfiguration(1);
 
         var fixture = new Fixture();
         var dirs21Reservation = fixture.Create<Dirs21Reservation>();
