@@ -1,5 +1,5 @@
+using DynamicMappingLibrary.Common.Helpers;
 using DynamicMappingLibrary.Contracts;
-using DynamicMappingLibrary.Helpers;
 
 namespace DynamicMappingLibrary.Strategies;
 
@@ -36,6 +36,7 @@ public abstract class MapStrategy<TSource, TTarget> : IMapStrategy
     /// </summary>
     /// <param name="source">The source object to be mapped.</param>
     /// <returns>The mapped object of type <typeparamref name="TTarget" />.</returns>
+    /// <param name="handlerContext"> A context to map nested object further</param>
     public abstract TTarget Map(TSource source, IMapHandlerContext handlerContext);
 
     /// <summary>
@@ -43,5 +44,6 @@ public abstract class MapStrategy<TSource, TTarget> : IMapStrategy
     /// </summary>
     /// <param name="target">The target object to be reverse-mapped.</param>
     /// <returns>The mapped object of type <typeparamref name="TSource" />.</returns>
+    /// <param name="handlerContext"> A context to map nested object further</param>
     public abstract TSource ReverseMap(TTarget target, IMapHandlerContext handlerContext);
 }

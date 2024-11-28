@@ -1,4 +1,4 @@
-namespace DynamicMappingLibrary.Helpers;
+namespace DynamicMappingLibrary.Common.Helpers;
 
 public static class TypeCastUtil
 {

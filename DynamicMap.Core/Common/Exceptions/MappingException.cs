@@ -1,4 +1,4 @@
-namespace DynamicMappingLibrary.Exceptions;
+namespace DynamicMappingLibrary.Common.Exceptions;
 
 public class MappingException : Exception
 {

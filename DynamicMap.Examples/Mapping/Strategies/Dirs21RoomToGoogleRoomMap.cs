@@ -1,9 +1,9 @@
-using DynamicMap.Example.Models.Google;
+using DynamicMap.Example.Models.External;
 using DynamicMap.Example.Models.Internal;
 using DynamicMappingLibrary.Contracts;
 using DynamicMappingLibrary.Strategies;
 
-namespace DynamicMap.Example.Mappers;
+namespace DynamicMap.Example.Mapping.Strategies;
 
 public class Dirs21RoomToGoogleRoomMap : MapStrategy<Dirs21Room, GoogleRoom>
 {

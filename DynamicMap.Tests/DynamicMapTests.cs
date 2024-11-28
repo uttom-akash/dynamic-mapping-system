@@ -1,172 +1,196 @@
 ﻿using AutoFixture;
-using DynamicMap.Example;
-using DynamicMap.Example.Models.Google;
+using DynamicMap.Example.Mapping;
+using DynamicMap.Example.Mapping.Strategies;
+using DynamicMap.Example.Models.External;
 using DynamicMap.Example.Models.Internal;
-using DynamicMappingLibrary.Exceptions;
+using DynamicMappingLibrary.Common.Exceptions;
+using DynamicMappingLibrary.Configurations;
 using DynamicMappingLibrary.Handlers;
-using DynamicMapTests.Setup;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
-using TestDirs21Room = DynamicMapTests.Setup.TestDirs21Room;
 
 namespace DynamicMapTests;
 
 public class DynamicMapTests
 {
-    private readonly ILogger<MapHandler> _logger;
-    private readonly MapHandler _mapHandler;
-    private readonly TestMapConfiguration _testMapConfiguration;
-
-    public DynamicMapTests()
+    [Fact]
+    public void ShouldThrowArgumentException_WhenRecursionDepthLessThanOne()
     {
-        _testMapConfiguration = new TestMapConfiguration();
-        _logger = new Mock<ILogger<MapHandler>>().Object;
-        _mapHandler = new MapHandler(_testMapConfiguration, _logger);
+        // Arrange, Act & Assert
+        Assert.Throws<ArgumentException>(() => new ExampleMapConfiguration(0));
     }
 
     [Fact]
-    public void Map_MapRuleIsNotAdded_ThrowsMappingRulesNotFoundException()
+    public void ShouldThrowMappingRulesNotFoundException_WhenMapRuleIsNotAdded_()
     {
         // Arrange
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
+
         var fixture = new Fixture();
-        var dirs21Room = fixture.Create<TestDirs21Room>();
+        var dirs21Room = fixture.Create<Dirs21Room>();
 
         // Act & Assert
-        Assert.Throws<MappingRulesNotFoundException>(() => _mapHandler
-            .Map(dirs21Room, "Model.Room", "Google.Room"));
+        Assert.Throws<MappingRulesNotFoundException>(() => mapHandler
+            .Map(dirs21Room, "Dirs21.Room", "Google.Room"));
     }
 
     [Fact]
-    public void Map_MapRuleIsAddedTwice_ThrowsMappingRulesAlreadyExistsException()
+    public void ShouldThrowMappingRulesAlreadyExistsException_WhenMapRuleIsAddedTwice()
     {
         // Arrange
-        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
-            new TestDirs21RoomToGoogleRoomMap());
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
+
+        testMapConfiguration.AddMap("Dirs21.Room", "Google.Room",
+            new Dirs21RoomToGoogleRoomMap());
 
         // Act & Assert
-        Assert.Throws<MappingRulesAlreadyExistsException>(() => _testMapConfiguration
-            .AddMap("Model.Room", "Google.Room",
-                new TestDirs21RoomToGoogleRoomMap()));
+        Assert.Throws<MappingRulesAlreadyExistsException>(() => testMapConfiguration
+            .AddMap("Dirs21.Room", "Google.Room",
+                (src, ctx) => null));
     }
 
     [Fact]
-    public void Map_Dirs21ToGoogleRoomMapAdded_ShouldReturnGoogleRoom()
+    public void ShouldReturnGoogleRoom_WhenDirs21ToGoogleRoomMapIsConfigured()
     {
         //Arrange
-        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
-            new TestDirs21RoomToGoogleRoomMap());
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
+
+        testMapConfiguration.AddMap("Dirs21.Room", "Google.Room",
+            new Dirs21RoomToGoogleRoomMap());
 
         var fixture = new Fixture();
-        var dirs21Room = fixture.Create<TestDirs21Room>();
+        var dirs21Room = fixture.Create<Dirs21Room>();
 
-        var googleRoom = (TestGoogleRoom)_mapHandler.Map(dirs21Room, "Model.Room", "Google.Room");
+        // Act
+        var googleRoom = (GoogleRoom)mapHandler.Map(dirs21Room,
+            "Dirs21.Room",
+            "Google.Room");
 
+        //Assert
         Assert.NotNull(googleRoom);
         Assert.Equal(googleRoom.IsAvailable, dirs21Room.IsAvailable);
     }
 
     [Fact]
-    public void Map_Dirs21ToGoogleRoomReverseMapAdded_ShouldReturnDirs21Room()
+    public void ShouldReturnDirs21Room_WhenDirs21ToGoogleRoomReverseMapIsAdded()
     {
         //Arrange
-        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
-                new TestDirs21RoomToGoogleRoomMap())
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
+        testMapConfiguration.AddMap("Dirs21.Room", "Google.Room",
+                new Dirs21RoomToGoogleRoomMap())
             .AddReverseMap();
 
         var fixture = new Fixture();
-        var googleRoom = fixture.Create<TestGoogleRoom>();
+        var googleRoom = fixture.Create<GoogleRoom>();
         googleRoom.RoomId = Guid.NewGuid().ToString();
-        googleRoom.RoomType = TestRoomType.Double.ToString();
+        googleRoom.RoomType = RoomType.Double.ToString();
 
-        var dirs21Room = (TestDirs21Room)_mapHandler.Map(googleRoom, "Google.Room", "Model.Room");
+        // Act
+        var dirs21Room = (Dirs21Room)mapHandler.Map(googleRoom,
+            "Google.Room",
+            "Dirs21.Room");
 
+        //Assert
         Assert.NotNull(dirs21Room);
         Assert.Equal(dirs21Room.IsAvailable, googleRoom.IsAvailable);
     }
 
     [Fact]
-    public void Map_NullArgument_ThrowsArgumentNullException()
+    public void ShouldThrowArgumentNullException_WhenNullIsProvidedAsSource()
     {
         //Arrange
-        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
-            new TestDirs21RoomToGoogleRoomMap());
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
 
-        TestDirs21Room dirs21Room = null;
+        testMapConfiguration.AddMap("Dirs21.Room", "Google.Room",
+            new Dirs21RoomToGoogleRoomMap());
 
+        Dirs21Room? dirs21Room = null;
+
+        // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            _mapHandler.Map(dirs21Room, "Model.Room", "Google.Room"));
+            mapHandler.Map(dirs21Room, "Dirs21.Room", "Google.Room"));
     }
 
     [Fact]
-    public void Map_SourceObjectTypeMissMatched_ThrowsInvalidCastException()
+    public void ShouldThrowInvalidCastException_WhenSourceObjectTypeIsNotMatched()
     {
         //Arrange
-        _testMapConfiguration.AddMap("Model.Room", "Google.Room",
-            new TestDirs21RoomToGoogleRoomMap());
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
+
+        testMapConfiguration.AddMap("Dirs21.Room", "Google.Room",
+            new Dirs21RoomToGoogleRoomMap());
 
         var fixture = new Fixture();
-        var googleRoom = fixture.Create<TestGoogleRoom>();
+        var googleRoom = fixture.Create<GoogleRoom>();
 
+        // Act & Assert
         Assert.Throws<InvalidCastException>(() =>
-            _mapHandler.Map(googleRoom, "Model.Room", "Google.Room"));
+            mapHandler.Map(googleRoom, "Dirs21.Room", "Google.Room"));
     }
 
     [Fact]
-    public void Map_NullMapResult_ThrowsNullMappingResultException()
+    public void ShouldThrowNullMappingResultException_WhenProvidedMappedResultIsNull()
     {
         //Arrange
-        var testDirs21ToGoogleRoomMap = new TestDirs21RoomToGoogleRoomMap();
+        var testMapConfiguration = new MapConfiguration();
+        var mapHandler = new MapHandler(testMapConfiguration);
 
-        _testMapConfiguration.AddMap("Model.Room", "Google.Room", (source, handlerContext) => { return null; });
+        testMapConfiguration.AddMap(
+            "Dirs21.Room",
+            "Google.Room", (source, handlerContext) => { return null; });
 
         var fixture = new Fixture();
-        var dirs21Room = fixture.Create<TestDirs21Room>();
+        var dirs21Room = fixture.Create<Dirs21Room>();
 
+        // Act & Assert
         Assert.Throws<NullMappingResultException>(() =>
-            _mapHandler.Map(dirs21Room, "Model.Room", "Google.Room"));
+            mapHandler.Map(dirs21Room, "Dirs21.Room", "Google.Room"));
     }
 
     [Fact]
-    public void Map_RecursionDepthTwo_ShouldMapNestedObject()
+    public void ShouldMapOneLevelNestedObject_WhenRecursionDepthIsTwo()
     {
         //Arrange
         var exampleMapContext = new ExampleMapConfiguration(2);
+        var mapHandler = new MapHandler(exampleMapContext);
 
         var fixture = new Fixture();
         var dirs21Reservation = fixture.Create<Dirs21Reservation>();
 
-        var mapHandler = new MapHandler(exampleMapContext, _logger);
-
+        // Act
         var googleReservation =
-            (GoogleReservation)mapHandler.Map(dirs21Reservation, "Model.Reservation", "Google.Reservation");
+            (GoogleReservation)mapHandler.Map(dirs21Reservation,
+                "Dirs21.Reservation", "Google.Reservation");
 
+        //Assert
         Assert.NotNull(googleReservation);
 
         Assert.NotNull(googleReservation.Room);
-
-        Assert.NotNull(googleReservation.User);
     }
 
     [Fact]
-    public void Map_RecursionDepthOne_ShouldNotMapNestedObject()
+    public void ShouldNotMapOneLevelNestedObject_WhenRecursionDepthLessThanTwo()
     {
         //Arrange
         var exampleMapContext = new ExampleMapConfiguration(1);
+        var mapHandler = new MapHandler(exampleMapContext);
 
         var fixture = new Fixture();
         var dirs21Reservation = fixture.Create<Dirs21Reservation>();
 
-        var mapHandler = new MapHandler(exampleMapContext, _logger);
-
+        // Act
         var googleReservation = (GoogleReservation)mapHandler.Map(dirs21Reservation,
-            "Model.Reservation",
+            "Dirs21.Reservation",
             "Google.Reservation");
 
+        //Assert
         Assert.NotNull(googleReservation);
 
         Assert.Null(googleReservation.Room);
-
-        Assert.Null(googleReservation.User);
     }
 }

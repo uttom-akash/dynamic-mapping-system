@@ -1,4 +1,4 @@
-using DynamicMappingLibrary.Exceptions;
+using DynamicMappingLibrary.Common.Exceptions;
 
 namespace DynamicMappingLibrary.Contracts;
 
@@ -10,20 +10,22 @@ public interface IMapStrategy
     /// <summary>
     ///     Maps the provided source object to a target object based on the implemented strategy.
     ///     Throws an <see cref="ArgumentNullException" /> if the source is null.
-    ///     Throws an <see cref="InvalidSourceTypeException" /> if the source is not of the expected type.
+    ///     Throws an <see cref="InvalidCastException" /> if the source is not of the expected type.
     ///     Throws a <see cref="NullMappingResultException" /> if the mapping result is null.
     /// </summary>
     /// <param name="source">The source object to be mapped.</param>
+    /// <param name="handlerContext"> A context to map nested object further</param>
     /// <returns>The mapped target object.</returns>
     object? Map(object source, IMapHandlerContext handlerContext);
 
     /// <summary>
     ///     Maps the provided target object back to a source object based on the implemented strategy.
     ///     Throws an <see cref="ArgumentNullException" /> if the source is null.
-    ///     Throws an <see cref="InvalidTargetTypeException" /> if the target is not of the expected type.
+    ///     Throws an <see cref="InvalidCastException" /> if the target is not of the expected type.
     ///     Throws a <see cref="NullMappingResultException" /> if the mapping result is null.
     /// </summary>
     /// <param name="target">The target object to be reverse-mapped.</param>
+    /// <param name="handlerContext"> A context to map nested object further</param>
     /// <returns>The mapped source object.</returns>
     object? ReverseMap(object target, IMapHandlerContext handlerContext);
 }

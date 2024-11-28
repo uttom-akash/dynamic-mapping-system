@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Core", "DynamicM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Tests", "DynamicMap.Tests\DynamicMap.Tests.csproj", "{B95AFC14-82DB-49D2-97C2-46C34A547AE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Example", "DynamicMap.Example\DynamicMap.Example.csproj", "{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicMap.Examples", "DynamicMap.Examples\DynamicMap.Examples.csproj", "{B2489B20-934F-49BD-AA56-F6AE6EFDFB67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

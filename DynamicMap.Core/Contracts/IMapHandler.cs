@@ -12,9 +12,9 @@ public interface IMapHandler
     ///     Throws an <see cref="InvalidTargetTypeException" /> if the target is not of the expected type.
     ///     Throws a <see cref="MappingResultNullException" /> if the mapping result is null.
     /// </summary>
-    /// <param name="src">The source object to be mapped.</param>
+    /// <param name="source">The source object to be mapped.</param>
     /// <param name="sourceType">The name of the source type.</param>
     /// <param name="targetType">The name of the target type.</param>
     /// <returns>The mapped object of the target type.</returns>
-    object Map(object src, string sourceType, string targetType);
+    object Map(object source, string sourceType, string targetType);
 }

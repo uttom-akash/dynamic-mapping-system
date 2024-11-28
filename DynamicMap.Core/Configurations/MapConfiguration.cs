@@ -1,14 +1,16 @@
+using DynamicMappingLibrary.Common.Exceptions;
 using DynamicMappingLibrary.Contracts;
-using DynamicMappingLibrary.Exceptions;
 
 namespace DynamicMappingLibrary.Configurations;
 
 /// <summary>
-///     <c>MapContext</c> is a configurations store that provides interface to add and retrieve map configurations
+///     <c>MapConfiguration</c> is a configurations store that provides interface to add and retrieve map configurations
 /// </summary>
 public class MapConfiguration
 {
     private readonly Dictionary<string, Func<object, IMapHandlerContext, object?>> _configurationStore = new();
+
+    private int _maxRecursionDepth = 3;
 
     public MapConfiguration()
     {
@@ -19,7 +21,20 @@ public class MapConfiguration
         MaxRecursionDepth = maxRecursionDepth;
     }
 
-    public int MaxRecursionDepth { get; protected set; } = 3;
+    public int MaxRecursionDepth
+    {
+        get => _maxRecursionDepth;
+        protected set
+        {
+            if (value < 1)
+                throw new ArgumentException("MaxRecursionDepth must be at least 1.");
+
+            if (value > 100)
+                throw new ArgumentException("MaxRecursionDepth cannot exceed 100.");
+
+            _maxRecursionDepth = value;
+        }
+    }
 
     /// <summary>
     ///     Adds a new map configuration between a source type and a target type.

@@ -1,6 +1,6 @@
+using DynamicMappingLibrary.Common.Exceptions;
 using DynamicMappingLibrary.Configurations;
 using DynamicMappingLibrary.Contracts;
-using DynamicMappingLibrary.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace DynamicMappingLibrary.Handlers;
@@ -22,29 +22,31 @@ public class MapHandlerContext : IMapHandlerContext
 
     private int RecursionDepth { get; }
 
-    public object? Map(object? src, string sourceType, string targetType)
+    public object? Map(object? source, string sourceType, string targetType)
     {
-        if (src is null)
+        if (source is null)
         {
             _logger.LogDebug($"Lower level source object {sourceType} is null");
             return null;
         }
 
-        if (HasExceddedRecursionDepth())
+        if (HasExceededRecursionDepth())
         {
             _logger.LogDebug($"Exceeded maximum recursion depth: {_mapConfiguration.MaxRecursionDepth}");
 
             return null;
         }
 
+        // retrieve the registered  mapper function
         var mapFunc = _mapConfiguration
             .GetMapFunc(sourceType, targetType);
 
+        // create map execution context for handling the mapping nested reference.
         var childHandlerContext = Create(_mapConfiguration,
             _logger,
             RecursionDepth - 1);
 
-        var target = mapFunc.Invoke(src, childHandlerContext);
+        var target = mapFunc.Invoke(source, childHandlerContext);
 
         if (target is null)
             throw new NullMappingResultException($"Could not map from {sourceType} to {targetType}");
@@ -52,7 +54,7 @@ public class MapHandlerContext : IMapHandlerContext
         return target;
     }
 
-    private bool HasExceddedRecursionDepth()
+    private bool HasExceededRecursionDepth()
     {
         return RecursionDepth <= 0;
     }

@@ -1,9 +1,9 @@
-using DynamicMap.Example.Models.Google;
+using DynamicMap.Example.Models.External;
 using DynamicMap.Example.Models.Internal;
 using DynamicMappingLibrary.Contracts;
 using DynamicMappingLibrary.Strategies;
 
-namespace DynamicMap.Example.Mappers;
+namespace DynamicMap.Example.Mapping.Strategies;
 
 public class Dirs21ToGoogleReservationMap : MapStrategy<Dirs21Reservation, GoogleReservation>
 {
@@ -15,12 +15,9 @@ public class Dirs21ToGoogleReservationMap : MapStrategy<Dirs21Reservation, Googl
             UserEmail = src.CustomerEmail,
             UserName = src.CustomerName,
             Date = src.ReservationDate,
-            Room = (GoogleRoom?)handlerContext.Map(src.Dirs21Room,
-                "Model.Room",
-                "Google.Room"),
-            User = (GoogleUser?)handlerContext.Map(src.Dirs21User,
-                "Model.User",
-                "Google.User")
+            Room = (GoogleRoom)handlerContext.Map(src.Dirs21Room,
+                "Dirs21.Room",
+                "Google.Room")
         };
     }
 
@@ -34,12 +31,9 @@ public class Dirs21ToGoogleReservationMap : MapStrategy<Dirs21Reservation, Googl
             ReservationDate = dest.Date,
             CreatedAt = dest.Date,
             UpdatedAt = DateTime.UtcNow,
-            Dirs21Room = (Dirs21Room?)handlerContext.Map(dest.Room,
+            Dirs21Room = (Dirs21Room)handlerContext.Map(dest.Room,
                 "Google.Room",
-                "Model.Room"),
-            Dirs21User = (Dirs21User?)handlerContext.Map(dest.User,
-                "Google.User",
-                "Model.User")
+                "Dirs21.Room")
         };
     }
 }

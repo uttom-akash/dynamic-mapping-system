@@ -1,4 +1,4 @@
-namespace DynamicMap.Example.Models.Google;
+namespace DynamicMap.Example.Models.External;
 
 public class GoogleRoom
 {
