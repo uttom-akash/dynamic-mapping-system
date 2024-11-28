@@ -9,8 +9,8 @@ The **Dynamic Mapping Library** is a lightweight, high-performance, and extensib
 - [Dynamic Mapping Library](#dynamic-mapping-library)
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
-  - [Features](#features)
   - [Assumption](#assumption)
+  - [Features](#features)
   - [Potential Issues](#potential-issues)
   - [Installation](#installation)
   - [Quick Start](#quick-start)
@@ -28,6 +28,16 @@ The **Dynamic Mapping Library** is a lightweight, high-performance, and extensib
   - [Key Classes](#key-classes)
   - [Future Work](#future-work)
 
+
+---
+
+## Assumption
+- I tried to adhere to the given signature `_mapHandler.Map(object data, string sourceType, string targetType);`.
+- I am uncertain whether the third-party data models will always have corresponding concrete types (such as classes or records) in our project. If third-party data models have corresponding concrete types in our project, using generic is better option. 
+- Since passed argument `data` is of type `object` in `_mapHandler.Map(object data, string sourceType, string targetType);` so I am returing the type `object` as well.
+- Mapping logics between source and target will be provided by developer for now.
+- Pure mapping library to evaluate the thought process.
+
 ---
 
 ## Features
@@ -37,14 +47,6 @@ The **Dynamic Mapping Library** is a lightweight, high-performance, and extensib
 - **Customizable**: Multple way to provide custom mapping logic with ease.  
 - **External Dependency**: No third party package.
 
----
-
-## Assumption
-- I tried to adhere to the given signature `_mapHandler.Map(object data, string sourceType, string targetType);`.
-- I am uncertain whether the corresponding third-party data models will always have concrete types (such as classes or records) in our project. In addition to performance concerns, this is another reasons not to use Reflection.
-- Since passed argument `data` is of type `object` in `_mapHandler.Map(object data, string sourceType, string targetType);` so I am returing the type `object` as well.
-- Mapping logics between source and target will be provided by developer for now.
-- Pure mapping library to evaluate the thought process.
 
 ---
 
@@ -350,7 +352,7 @@ Currently, we are not supporting `ReverseMap` out of the box with this approach 
 
 ## Future Work
 Designing a map library takes a lot thoughts and time. Due to time time constraint, everything is not taken care of. We can focus on following in the future.
-- Implement an approach to map properties automatically.
+- Implement an approach to map properties automatically. 
 - Have separate config meta data for each map rule. For example `MaxRecursionDepth` is same for all mapping rules now. 
 
   
