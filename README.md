@@ -40,9 +40,11 @@ The **Dynamic Mapping Library** is a lightweight, high-performance, and extensib
 ---
 
 ## Assumption
+- I tried to adhere to the given signature `_mapHandler.Map(object data, string sourceType, string targetType);`.
+- I am uncertain whether the corresponding third-party data models will always have concrete types (such as classes or records) in our project. In addition to performance concerns, this is another reasons not to use Reflection.
+- Since passed argument `data` is of type `object` in `_mapHandler.Map(object data, string sourceType, string targetType);` so I am returing the type `object` as well.
 - Mapping logics between source and target will be provided by developer for now.
 - Pure mapping library to evaluate the thought process.
-- Sometimes, corresponding third party data models may not have concrete types (such as classes or record) in our project. Bsides performanace, another reasons not to use Reflection.
 
 ---
 
