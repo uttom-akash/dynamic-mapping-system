@@ -44,8 +44,9 @@ The **Dynamic Mapping Library** is a lightweight, high-performance, and extensib
 - **High Performance**: Designed for optimal performance avoiding reflection and assembly scanning.
 - **Supports Nested Structures**: Works with complex, multi-level data models.
 - **Extensible Mapping Template**: Provides an extensible template to take care of mapping logics.
-- **Customizable**: Multple way to provide custom mapping logic with ease.  
-- **External Dependency**: No third party package.
+- **Customizable**: Multple ways to provide custom mapping logic with ease.  
+- **External Dependency**: No third party packages are used.
+- **Test Coverage**: Thoroughly validated through comprehensive unit and integration tests. 
 
 
 ---
